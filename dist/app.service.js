@@ -8,9 +8,13 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppService = void 0;
 const common_1 = require("@nestjs/common");
+const products_mock_1 = require("./mock/products.mock");
 let AppService = class AppService {
-    getHello() {
-        return ' 2 ';
+    constructor() {
+        this.products = products_mock_1.PRODUCTS;
+    }
+    async getProducts() {
+        return await this.products;
     }
 };
 AppService = __decorate([
