@@ -24,6 +24,14 @@ let UsersController = class UsersController {
     getUsers() {
         return this.userService.getAllUsers();
     }
+    async createUser(createUser) {
+        const { email } = createUser;
+        const isNewUser = await this.userService.getFiend(email);
+        if (!isNewUser.length) {
+            return this.userService.create(createUser);
+        }
+        return { message: 'Користувач уже існує!' };
+    }
     async getUser(createUser) {
         const { email, password } = createUser;
         const isLogin = await this.userService.getFiend(email);
@@ -38,14 +46,7 @@ let UsersController = class UsersController {
         else {
             return { message: "Такого користувача не існує!" };
         }
-    }
-    async createUser(createUser) {
-        const { email } = createUser;
-        const isNewUser = await this.userService.getFiend(email);
-        if (!isNewUser.length) {
-            return this.userService.create(createUser);
-        }
-        return { message: 'Користувач уже існує!' };
+        return { message: "Помилка!" };
     }
     update(updateProducts, id) {
         return this.userService.updateUser(id, updateProducts);
@@ -62,19 +63,19 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getUsers", null);
 __decorate([
-    (0, common_1.Post)(':login'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_user_dto_1.LoginUserDto]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "getUser", null);
-__decorate([
     (0, common_1.Post)('create'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "createUser", null);
+__decorate([
+    (0, common_1.Post)('login'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_user_dto_1.LoginUserDto]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "getUser", null);
 __decorate([
     (0, common_1.Put)(':id'),
     __param(0, (0, common_1.Body)()),

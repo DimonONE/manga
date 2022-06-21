@@ -6,12 +6,12 @@ export declare class UsersController {
     private readonly userService;
     constructor(userService: UsersService);
     getUsers(): Promise<User[]>;
+    createUser(createUser: CreateUserDto): Promise<User | {
+        message: any;
+    }>;
     getUser(createUser: LoginUserDto): Promise<{
         status: any;
     } | {
-        message: any;
-    }>;
-    createUser(createUser: CreateUserDto): Promise<User | {
         message: any;
     }>;
     update(updateProducts: UpdateUserDto, id: string): Promise<User>;

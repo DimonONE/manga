@@ -26,7 +26,20 @@ export class UsersController {
     return this.userService.getAllUsers();
   }
 
-  @Post(':login')
+  @Post('create')
+  async createUser(
+    @Body() createUser: CreateUserDto,
+  ): Promise<User | { message }> {
+    const { email } = createUser;
+    const isNewUser = await this.userService.getFiend(email);
+
+    if (!isNewUser.length) {
+      return this.userService.create(createUser);
+    }
+    return { message: 'Користувач уже існує!' };
+  }
+
+  @Post('login')
   async getUser(@Body() createUser: LoginUserDto): Promise<{ status } | { message } > {
     const { email, password } = createUser
     const isLogin = await this.userService.getFiend(email);
@@ -39,19 +52,7 @@ export class UsersController {
     } else {
       return { message: "Такого користувача не існує!"}
     }
-  }
-
-  @Post('create')
-  async createUser(
-    @Body() createUser: CreateUserDto,
-  ): Promise<User | { message }> {
-    const { email } = createUser;
-    const isNewUser = await this.userService.getFiend(email);
-
-    if (!isNewUser.length) {
-      return this.userService.create(createUser);
-    }
-    return { message: 'Користувач уже існує!' };
+    return { message: "Помилка!" }
   }
 
   @Put(':id')
