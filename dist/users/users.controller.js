@@ -24,13 +24,24 @@ let UsersController = class UsersController {
     getUsers() {
         return this.userService.getAllUsers();
     }
-    getUser(email) {
-        return this.userService.getFiend(email);
+    async getUser(createUser) {
+        const { email, password } = createUser;
+        const isLogin = await this.userService.getFiend(email);
+        if (isLogin.length) {
+            if (isLogin[0].password === password) {
+                return { status: "Success" };
+            }
+            else {
+                return { message: "Пароль не вірний!" };
+            }
+        }
+        else {
+            return { message: "Такого користувача не існує!" };
+        }
     }
     async createUser(createUser) {
         const { email } = createUser;
         const isNewUser = await this.userService.getFiend(email);
-        console.log('isNewUser', isNewUser);
         if (!isNewUser.length) {
             return this.userService.create(createUser);
         }
@@ -51,14 +62,14 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getUsers", null);
 __decorate([
-    (0, common_1.Get)(':email'),
-    __param(0, (0, common_1.Param)('email')),
+    (0, common_1.Post)(':login'),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [create_user_dto_1.LoginUserDto]),
+    __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getUser", null);
 __decorate([
-    (0, common_1.Post)(),
+    (0, common_1.Post)('create'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),

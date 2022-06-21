@@ -8,8 +8,10 @@ import {
   Param,
   Post,
   Put,
+  Res,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { Response } from 'express';
+import { CreateUserDto, LoginUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user-dto';
 import { UsersService } from './users.service';
 import { User } from './schemas/user.schema';
@@ -24,18 +26,27 @@ export class UsersController {
     return this.userService.getAllUsers();
   }
 
-  @Get(':email')
-  getUser(@Param('email') email: string) {
-    return this.userService.getFiend(email);
+  @Post(':login')
+  async getUser(@Body() createUser: LoginUserDto): Promise<{ status } | { message } > {
+    const { email, password } = createUser
+    const isLogin = await this.userService.getFiend(email);
+    if (isLogin.length) {
+      if (isLogin[0].password === password) {
+        return { status: "Success" };
+      } else {
+        return { message: "Пароль не вірний!"}
+      }
+    } else {
+      return { message: "Такого користувача не існує!"}
+    }
   }
 
-  @Post()
+  @Post('create')
   async createUser(
     @Body() createUser: CreateUserDto,
   ): Promise<User | { message }> {
     const { email } = createUser;
     const isNewUser = await this.userService.getFiend(email);
-    console.log('isNewUser', isNewUser);
 
     if (!isNewUser.length) {
       return this.userService.create(createUser);
